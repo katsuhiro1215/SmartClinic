@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Price extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
+
+    public function priceCategory()
+    {
+        return $this->belongsTo(PriceCategory::class);
+    }
 }

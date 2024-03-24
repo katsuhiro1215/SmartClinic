@@ -1,31 +1,14 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerInformationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\InertiaTestController;
-
-
-Route::get('/inertia-test', function () {
-    return Inertia::render('InertiaTest');
-    }
-);
-
-Route::get('/component-test', function () {
-    return Inertia::render('ComponentTest');
-    }
-);
-
-Route::controller(InertiaTestController::class)->prefix('inertia')->group(function () {
-    Route::get('/', 'index')->name('inertia.index');
-    Route::get('create', 'create')->name('inertia.create');
-    Route::post('/', 'store')->name('inertia.store');
-    Route::get('{id}/show', 'show')->name('inertia.show');
-    Route::delete('{id}', 'delete')->name('inertia.delete');
-});
-
-
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -36,14 +19,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::controller(DashboardController::class)->prefix('dashboard')->group(function () {
+        Route::get('/', 'index')->name('dashboard');
+    });
+    Route::controller(UserController::class)->prefix('user')->group(function () {
+
+    });
+    Route::controller(UserProfileController::class)->prefix('userProfile')->group(function () {
+
+    });
+    Route::resource('/customer', CustomerController::class);
+    Route::resource('/customerInformation', CustomerInformationController::class)->except('index');
+
 });
 
 require __DIR__.'/auth.php';
